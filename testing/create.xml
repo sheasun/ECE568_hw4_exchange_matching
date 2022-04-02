@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<create>
+    <account id="123456" balance="1000"/>
+    <symbol sym="SPY">
+        <account id="123456">100000</account>
+        <account id="1234567">200000</account>
+        <account id="12345678">300000</account>
+    </symbol>
+    <account id="12345" balance="100"/>
+    <account id="1234" balance="10"/>
+</create>

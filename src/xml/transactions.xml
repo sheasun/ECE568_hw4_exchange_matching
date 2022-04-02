@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<transactions id="ACCOUNT_ID"> 
+    <order sym="SYM" amount="50" limit="20"/>
+    <query id="54321"/>
+    <cancel id="321"/>
+    <query id="111"/>
+    <cancel id="222"/>
+    <order sym="BIT" amount="30" limit="40"/>
+</transactions>

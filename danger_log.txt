@@ -1,0 +1,32 @@
+3/22/2022
+1. When an user creates an order, the program should estimate the current order is a sell order or a buy one. If the order is a sell order, then the amount of the stock symbol owned by the user shoud be deducted. If the order is a buy order, then the relevant balance in the user's account should be deduced. However, when the user creates an order in the postgres now, the balance or the amount would not be deducted automatically.
+
+3/23/2022
+1. Handled the error that posted on yesterday.
+2. After an order is created, the system should automatically matches the eligible orders in the database. After two orders are successfully matched, the status, amount and price of related orders and the related account and position should be updated. We are still handling this issue.
+
+3/24/2022
+1. Handled the issue that after two orders successfully matched, the balance of their account would not be updated correctly. The previous issue occurred because that we mistakenly used plus sign instead of minus sign.
+
+3/25/2022
+1. We added the judgement that when a position or an order is going to be added into the database, the system should judge whether the related account is existed or not. If the account does not exist, then the system would show a sign that the operation is prevented.
+2. In the XML parser, the program should first confirm that the input xml is valid. For example, the ID of the account and the TRANS_ID should be an integer or a double type. In addition, the xml cannot be empty.
+
+3/27/2022
+1. We added the contraint that an account with negative balance would not be allowed to create (i.e. the balance in the account should be positive or zero).
+
+3/28/2022
+Deciding the length of the xml to use the numbers on the first line is not good for testing (because you need to count how many characters there are), so instead all messages after the first line are received, assuming the length of the message sent by the user is correct.
+
+3.30/2022
+After a single client and server establish a connection and transfer information to each other. Decided to write more testcases. Set the server to be multithreaded. Because it is very troublesome to write input examples, I wrote an xml random generator and placed it in xmlGenerator.h. This will randomly generate an xml string request.
+
+3.31/2022
+1. A client sends 100 different requests to the server, no problem. But reconsidering the scale of scalability, we decided to write a multi-threaded client.
+We encountered a problem when writing a multi-threaded client. If 10 processes are required to send xml messages, several processes will show that no information is sent. The server will not receive it either. Later, I realized that it was because the main thread finished first but the child thread had not finished, so the child thread was forcibly closed.
+Added sleep(1) in client.cpp to prevent the main thread from exiting early.
+
+2. But the server still does not accept all the messages. After careful inspection, it is found that it is &client_connection_fd. After updating to the maximum value, other threads may read the same information. New an object in C++ solves this problem.
+
+4.1/2022
+Our group is still dealing with multithreading issues. The program has problems when there are too many threads. Disconnect after each operation of the database, and reconnect each time there is a new request. But there are still too many clients. Finally, I decided to use two threads, one to track a queue, the queue is used to put the client's fd and xml, and the other is to track the number of current threads. If there are not so many threads, take out messages from the queue for processing. The atomic int is used to record the number of threads, and the queue is also a concurrenyqueue.
